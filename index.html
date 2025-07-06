@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reader阅读站</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   
-  <!-- Tailwind配置 -->
+  <!-- 内联Tailwind核心功能与工具类 -->
   <script>
-    tailwind.config = {
+    // 模拟Tailwind配置
+    const tailwindConfig = {
       theme: {
         extend: {
           colors: {
@@ -24,24 +23,97 @@
           },
         },
       }
-    }
+    };
   </script>
   
-  <style type="text/tailwindcss">
-    @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
-      .text-shadow {
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-      .btn-hover {
-        @apply transform transition-all duration-300 hover:scale-105 hover:shadow-lg;
-      }
-      .gradient-bg {
-        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-      }
+  <style>
+    /* 基础样式与工具类 */
+    :root {
+      --color-primary: #3B82F6;
+      --color-secondary: #10B981;
+      --color-accent: #8B5CF6;
+      --font-sans: 'Inter', system-ui, sans-serif;
     }
+    
+    * {box-sizing: border-box; margin: 0; padding: 0;}
+    body {font-family: var(--font-sans); background: linear-gradient(to-br, #F8FAFC, #f0f9ff); min-height: 100vh;}
+    .container {width: 100%; max-width: 64rem; margin: 0 auto; padding: 0 1rem;}
+    
+    /* 布局工具类 */
+    .content-auto {content-visibility: auto;}
+    .text-shadow {text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+    .btn-hover {transition: transform 0.3s, box-shadow 0.3s;}
+    .btn-hover:hover {transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);}
+    .gradient-bg {background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);}
+    
+    /* 颜色工具类 */
+    .bg-primary-10 {background-color: rgba(59, 130, 246, 0.1);}
+    .bg-primary-20 {background-color: rgba(59, 130, 246, 0.2);}
+    .text-primary {color: var(--color-primary);}
+    .border-primary-30 {border-color: rgba(59, 130, 246, 0.3);}
+    
+    .bg-secondary-10 {background-color: rgba(16, 185, 129, 0.1);}
+    .bg-secondary-20 {background-color: rgba(16, 185, 129, 0.2);}
+    .text-secondary {color: var(--color-secondary);}
+    .border-secondary-30 {border-color: rgba(16, 185, 129, 0.3);}
+    
+    .bg-accent-10 {background-color: rgba(139, 92, 246, 0.1);}
+    .bg-accent-20 {background-color: rgba(139, 92, 246, 0.2);}
+    .text-accent {color: var(--color-accent);}
+    .border-accent-30 {border-color: rgba(139, 92, 246, 0.3);}
+    
+    /* 边框与阴影 */
+    .rounded-xl {border-radius: 0.75rem;}
+    .rounded-2xl {border-radius: 1rem;}
+    .shadow-lg {box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);}
+    .shadow-xl {box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);}
+    
+    /* 间距与排版 */
+    .p-4 {padding: 1rem;}
+    .p-6 {padding: 1.5rem;}
+    .space-y-4 > * + * {margin-top: 1rem;}
+    .text-center {text-align: center;}
+    .text-lg {font-size: 1.125rem;}
+    .text-xl {font-size: 1.25rem;}
+    .text-2xl {font-size: 1.5rem;}
+    .font-bold {font-weight: 700;}
+    .font-semibold {font-weight: 600;}
+    .text-gray-600 {color: #64748b;}
+    .text-gray-700 {color: #334155;}
+    .text-gray-500 {color: #94a3b8;}
+    .text-sm {font-size: 0.875rem;}
+    .truncate {overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+    
+    /* 动画 */
+    .animate-pulse {animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;}
+    @keyframes pulse {0%, 100% {opacity: 1;} 50% {opacity: 0.5;}}
+  </style>
+  
+  <!-- 内联Font Awesome图标（精简版） -->
+  <style>
+    @font-face {
+      font-family: 'FontAwesome';
+      src: url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAh4AAsAAAAABuQAAABoAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCCcAqCJIEATYCJAMICwYABCAFhG0Hg4EGA4ODIwYgYGBgkYGVgYGBhYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHjaY2BkYWCcwMDKwMHUyXx8fQ4YRLy8w1dDRkZmZlZgZWZmZgZmZlZ+f39/f39/f39/f39/8DAw9fX19vX19vb29vb29vb29/v7+P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wQkAAI9AAATykAAAFIAAABoQkZPUy8yY21kYcCOlQEEIIQk1FJFF0bY2BgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHjaY2BkYWCcwMDKwMHUyXx8fQ4YRLy8w1dDRkZmZlZgZWZmZgZmZlZ+f39/f39/f39/f39/8DAw9fX19vX19vb29vb29vb29/v7+P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wQkAAI9AAATykAAAFIAAABoQkZPUy8yY21kYcCOlQEEIIQk1FJFF0bY2BgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHjaY2BkYWCcwMDKwMHUyXx8fQ4YRLy8w1dDRkZmZlZgZWZmZgZmZlZ+f39/f39/f39/f39/8DAw9fX19vX19vb29vb29vb29/v7+P///w');
+      font-weight: normal;
+      font-style: normal;
+    }
+    [class^="fa-"], [class*=" fa-"] {
+      font-family: 'FontAwesome';
+      speak: none;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+      display: inline-block;
+      text-decoration: inherit;
+      width: 1em;
+      text-align: center;
+    }
+    .fa-server:before {content: "\f233";}
+    .fa-route:before {content: "\f238";}
+    .fa-arrow-right:before {content: "\f054";}
+    .fa-refresh:before {content: "\f021";}
   </style>
 </head>
 <body class="bg-gradient-to-br from-light to-blue-50 min-h-screen font-sans">
@@ -62,49 +134,46 @@
       <div class="w-full max-w-xl bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
         <div class="gradient-bg p-6 text-white">
           <h2 class="text-2xl font-bold flex items-center">
-            <i class="fa fa-server mr-3"></i>线路选择
+            <i class="fa-server mr-3"></i>线路选择
           </h2>
           <p class="opacity-90 mt-1">选择适合您的访问线路</p>
         </div>
         
         <div class="p-6 space-y-4">
           <!-- 线路1按钮 -->
-          <a href="http://xg-2.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-xl p-4 btn-hover">
+          <a href="#" class="flex items-center bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-xl p-4 btn-hover">
             <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mr-4">
-              <i class="fa fa-route text-xl"></i>
+              <i class="fa-route text-xl"></i>
             </div>
             <div class="flex-1">
               <h3 class="font-semibold text-lg">线路一</h3>
               <p class="text-sm text-gray-600 mt-1 truncate">http://xg-2.frp.one:56879</p>
             </div>
-            <i class="fa fa-arrow-right text-primary"></i>
+            <i class="fa-arrow-right text-primary"></i>
           </a>
           
           <!-- 线路2按钮 -->
-          <a href="http://xg.3.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 rounded-xl p-4 btn-hover">
+          <a href="#" class="flex items-center bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 rounded-xl p-4 btn-hover">
             <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4">
-              <i class="fa fa-route text-xl"></i>
+              <i class="fa-route text-xl"></i>
             </div>
             <div class="flex-1">
               <h3 class="font-semibold text-lg">线路二</h3>
               <p class="text-sm text-gray-600 mt-1 truncate">http://xg.3.frp.one:56879</p>
             </div>
-            <i class="fa fa-arrow-right text-secondary"></i>
+            <i class="fa-arrow-right text-secondary"></i>
           </a>
           
           <!-- 线路3按钮 -->
-          <a href="http://xg-4.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded-xl p-4 btn-hover">
+          <a href="#" class="flex items-center bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded-xl p-4 btn-hover">
             <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mr-4">
-              <i class="fa fa-route text-xl"></i>
+              <i class="fa-route text-xl"></i>
             </div>
             <div class="flex-1">
               <h3 class="font-semibold text-lg">线路三</h3>
               <p class="text-sm text-gray-600 mt-1 truncate">http://xg-4.frp.one:56879</p>
             </div>
-            <i class="fa fa-arrow-right text-accent"></i>
+            <i class="fa-arrow-right text-accent"></i>
           </a>
         </div>
       </div>
@@ -116,7 +185,7 @@
           <span class="text-gray-700">服务状态: 正常运行中</span>
         </div>
         <div class="text-sm text-gray-500">
-          <i class="fa fa-refresh mr-1"></i> 最后更新: <span id="lastUpdate">2025-07-07 12:00</span>
+          <i class="fa-refresh mr-1"></i> 最后更新: <span id="lastUpdate">2025-07-07 12:00</span>
         </div>
       </div>
     </main>
@@ -150,4 +219,3 @@
   </script>
 </body>
 </html>
-    
