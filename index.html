@@ -20,7 +20,8 @@
             light: '#F8FAFC',
             status: {
               online: '#10B981',
-              offline: '#EF4444'
+              offline: '#EF4444',
+              checking: '#94A3B8'
             }
           },
           fontFamily: {
@@ -46,13 +47,16 @@
         background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
       }
       .status-dot {
-        @apply w-3 h-3 rounded-full inline-block mr-2;
+        @apply w-3 h-3 rounded-full inline-block ml-2;
       }
       .pulse-green {
         @apply bg-green-500 animate-pulse;
       }
       .static-red {
         @apply bg-red-500;
+      }
+      .pulse-gray {
+        @apply bg-gray-400 animate-pulse;
       }
     }
   </style>
@@ -82,39 +86,45 @@
         
         <div class="p-6 space-y-4">
           <!-- 线路1按钮 -->
-          <a href="http://xg-2.frp.one:56879" target="_blank" rel="noopener noreferrer" id="line1"
+          <a href="http://xg-2.frp.one:56879" target="_blank" rel="noopener noreferrer" 
              class="flex items-center bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-xl p-4 btn-hover">
             <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mr-4">
               <i class="fa fa-route text-xl"></i>
             </div>
             <div class="flex-1">
-              <h3 class="font-semibold text-lg">线路一</h3>
+              <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg">线路一 <span class="status-dot pulse-gray" id="line1-status"></span></h3>
+              </div>
               <p class="text-sm text-gray-600 mt-1 truncate">http://xg-2.frp.one:56879</p>
             </div>
             <i class="fa fa-arrow-right text-primary"></i>
           </a>
           
           <!-- 线路2按钮 -->
-          <a href="http://xg.3.frp.one:56879" target="_blank" rel="noopener noreferrer" id="line2"
+          <a href="http://xg.3.frp.one:56879" target="_blank" rel="noopener noreferrer" 
              class="flex items-center bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 rounded-xl p-4 btn-hover">
             <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4">
               <i class="fa fa-route text-xl"></i>
             </div>
             <div class="flex-1">
-              <h3 class="font-semibold text-lg">线路二</h3>
+              <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg">线路二 <span class="status-dot pulse-gray" id="line2-status"></span></h3>
+              </div>
               <p class="text-sm text-gray-600 mt-1 truncate">http://xg.3.frp.one:56879</p>
             </div>
             <i class="fa fa-arrow-right text-secondary"></i>
           </a>
           
           <!-- 线路3按钮 -->
-          <a href="http://xg-4.frp.one:56879" target="_blank" rel="noopener noreferrer" id="line3"
+          <a href="http://xg-4.frp.one:56879" target="_blank" rel="noopener noreferrer" 
              class="flex items-center bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded-xl p-4 btn-hover">
             <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mr-4">
               <i class="fa fa-route text-xl"></i>
             </div>
             <div class="flex-1">
-              <h3 class="font-semibold text-lg">线路三</h3>
+              <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg">线路三 <span class="status-dot pulse-gray" id="line3-status"></span></h3>
+              </div>
               <p class="text-sm text-gray-600 mt-1 truncate">http://xg-4.frp.one:56879</p>
             </div>
             <i class="fa fa-arrow-right text-accent"></i>
@@ -122,35 +132,11 @@
         </div>
       </div>
       
-      <!-- 状态指示器 -->
+      <!-- 服务状态指示器 -->
       <div class="w-full max-w-xl bg-white rounded-xl shadow-lg p-4">
-        <h3 class="font-semibold text-lg mb-3 text-dark">线路状态</h3>
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <span class="status-dot" id="line1-status"></span>
-              <span class="text-gray-700">线路一</span>
-            </div>
-            <span class="text-sm text-gray-500" id="line1-url">http://xg-2.frp.one:56879</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <span class="status-dot" id="line2-status"></span>
-              <span class="text-gray-700">线路二</span>
-            </div>
-            <span class="text-sm text-gray-500" id="line2-url">http://xg.3.frp.one:56879</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <span class="status-dot" id="line3-status"></span>
-              <span class="text-gray-700">线路三</span>
-            </div>
-            <span class="text-sm text-gray-500" id="line3-url">http://xg-4.frp.one:56879</span>
-          </div>
-        </div>
-        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+        <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <span class="status-dot" id="service-status"></span>
+            <span class="status-dot pulse-gray" id="service-status"></span>
             <span class="text-gray-700" id="service-text">服务状态: 检测中...</span>
           </div>
           <div class="text-sm text-gray-500">
@@ -163,7 +149,7 @@
     <!-- 页脚 -->
     <footer class="mt-16 text-center text-gray-500 text-sm">
       <p>© 2025 Reader阅读站 - 版权所有</p>
-      <p class="mt-2">请选择<span class="text-status-online font-medium">绿色状态</span>的线路以获得最佳体验</p>
+      <p class="mt-2">建议选择<span class="text-status-online font-medium">绿色状态</span>的线路以获得最佳体验</p>
     </footer>
   </div>
   
@@ -171,96 +157,110 @@
   <script>
     // 线路配置
     const lines = [
-      { id: 'line1', url: 'http://xg-2.frp.one:56879', statusElement: 'line1-status', textElement: 'line1' },
-      { id: 'line2', url: 'http://xg.3.frp.one:56879', statusElement: 'line2-status', textElement: 'line2' },
-      { id: 'line3', url: 'http://xg-4.frp.one:56879', statusElement: 'line3-status', textElement: 'line3' }
+      { id: 'line1', url: 'http://xg-2.frp.one:56879', statusElement: 'line1-status' },
+      { id: 'line2', url: 'http://xg.3.frp.one:56879', statusElement: 'line2-status' },
+      { id: 'line3', url: 'http://xg-4.frp.one:56879', statusElement: 'line3-status' }
     ];
+    
+    // 检测配置
+    const config = {
+      timeout: 5000,        // 增加超时时间到5秒，适应高延迟网络
+      retryCount: 3,        // 重试次数
+      retryDelay: 1000      // 重试间隔时间(毫秒)
+    };
     
     // 更新最后更新时间为当前时间
     document.addEventListener('DOMContentLoaded', function() {
-      checkLineStatus();
+      checkAllLines();
       
-      // 每5分钟自动检查一次线路状态
-      setInterval(checkLineStatus, 300000);
+      // 每3分钟自动检查一次线路状态
+      setInterval(checkAllLines, 180000);
     });
     
-    // 检查线路状态
-    function checkLineStatus() {
+    // 检查所有线路状态
+    function checkAllLines() {
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
       const formattedTime = now.toTimeString().slice(0, 5);
       document.getElementById('lastUpdate').textContent = `${formattedDate} ${formattedTime}`;
       
-      let allOnline = true;
-      let onlineCount = 0;
-      
-      // 重置所有线路状态
-      lines.forEach(line => {
-        const statusElement = document.getElementById(line.statusElement);
-        statusElement.className = 'status-dot';
-        statusElement.classList.add('animate-pulse');
-        statusElement.classList.add('bg-gray-400');
-      });
-      
-      document.getElementById('service-status').className = 'status-dot animate-pulse bg-gray-400';
+      document.getElementById('service-status').className = 'status-dot pulse-gray';
       document.getElementById('service-text').textContent = '服务状态: 检测中...';
       
-      // 逐个检查线路状态
-      lines.forEach(async (line, index) => {
-        try {
-          // 使用Fetch API检查线路连通性
-          const response = await fetch(line.url, {
-            method: 'HEAD',
-            mode: 'cors',
-            timeout: 5000 // 5秒超时
+      let onlineCount = 0;
+      
+      // 并行检查所有线路
+      Promise.all(lines.map(line => checkLineWithRetry(line)))
+        .then(results => {
+          results.forEach(result => {
+            if (result.online) {
+              onlineCount++;
+            }
           });
           
-          // 线路通畅
-          const statusElement = document.getElementById(line.statusElement);
-          statusElement.className = 'status-dot pulse-green';
+          // 更新服务状态
+          const serviceStatusElement = document.getElementById('service-status');
+          const serviceTextElement = document.getElementById('service-text');
           
-          // 线路按钮添加成功状态
-          const lineElement = document.getElementById(line.textElement);
-          lineElement.classList.remove('opacity-50', 'cursor-not-allowed');
-          lineElement.classList.add('cursor-pointer');
-          
-          onlineCount++;
-          
-          // 如果不是最后一个线路，延迟一点检查下一个，避免同时发送多个请求
-          if (index < lines.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 300));
+          if (onlineCount === lines.length) {
+            serviceStatusElement.className = 'status-dot pulse-green';
+            serviceTextElement.textContent = `服务状态: 全部${onlineCount}条线路正常运行`;
+          } else if (onlineCount > 0) {
+            serviceStatusElement.className = 'status-dot static-red';
+            serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常，${lines.length - onlineCount}条线路异常`;
+          } else {
+            serviceStatusElement.className = 'status-dot static-red';
+            serviceTextElement.textContent = '服务状态: 所有线路均无法连接';
           }
+        });
+    }
+    
+    // 检查单条线路状态并支持重试
+    async function checkLineWithRetry(line) {
+      let lastError = null;
+      
+      // 重置线路状态为检测中
+      const statusElement = document.getElementById(line.statusElement);
+      statusElement.className = 'status-dot pulse-gray';
+      
+      for (let i = 0; i < config.retryCount; i++) {
+        try {
+          // 使用HEAD请求检测连通性
+          const controller = new AbortController();
+          const signal = controller.signal;
+          
+          // 设置超时
+          const timeoutId = setTimeout(() => {
+            controller.abort();
+          }, config.timeout);
+          
+          // 尝试发送请求
+          const response = await fetch(line.url, {
+            method: 'HEAD',
+            mode: 'no-cors',
+            signal: signal
+          });
+          
+          // 清除超时
+          clearTimeout(timeoutId);
+          
+          // 请求成功，更新状态为在线
+          statusElement.className = 'status-dot pulse-green';
+          return { line, online: true };
           
         } catch (error) {
-          // 线路不通畅
-          const statusElement = document.getElementById(line.statusElement);
-          statusElement.className = 'status-dot static-red';
+          lastError = error;
           
-          // 线路按钮添加失败状态
-          const lineElement = document.getElementById(line.textElement);
-          lineElement.classList.add('opacity-50', 'cursor-not-allowed');
-          lineElement.classList.remove('cursor-pointer');
-          
-          allOnline = false;
-          
-          // 如果不是最后一个线路，延迟一点检查下一个，避免同时发送多个请求
-          if (index < lines.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 300));
+          // 不是最后一次尝试，继续重试
+          if (i < config.retryCount - 1) {
+            await new Promise(resolve => setTimeout(resolve, config.retryDelay));
           }
         }
-      }).then(() => {
-        // 所有线路检查完成，更新服务状态
-        const serviceStatusElement = document.getElementById('service-status');
-        const serviceTextElement = document.getElementById('service-text');
-        
-        if (allOnline) {
-          serviceStatusElement.className = 'status-dot pulse-green';
-          serviceTextElement.textContent = `服务状态: 全部${onlineCount}条线路正常运行`;
-        } else {
-          serviceStatusElement.className = 'status-dot static-red';
-          serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常，${lines.length - onlineCount}条线路异常`;
-        }
-      });
+      }
+      
+      // 所有重试都失败，更新状态为离线
+      statusElement.className = 'status-dot static-red';
+      return { line, online: false, error: lastError };
     }
     
     // 添加按钮点击效果
