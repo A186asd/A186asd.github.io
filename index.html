@@ -68,9 +68,6 @@
       <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-bold text-dark mb-4 text-shadow">
         <span class="text-primary">Reader</span><span class="text-accent">阅读站</span>
       </h1>
-      <p class="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto">
-        提供多条线路选择，确保您的阅读体验流畅无阻
-      </p>
     </header>
     
     <!-- 主内容区 -->
@@ -81,7 +78,7 @@
           <h2 class="text-2xl font-bold flex items-center">
             <i class="fa fa-server mr-3"></i>线路选择
           </h2>
-          <p class="opacity-90 mt-1">选择适合您的访问线路</p>
+          <p class="opacity-90 mt-1">请选择畅通线路</p>
         </div>
         
         <div class="p-6 space-y-4">
@@ -140,7 +137,7 @@
             <span class="text-gray-700" id="service-text">服务状态: 检测中...</span>
           </div>
           <div class="text-sm text-gray-500">
-            <i class="fa fa-refresh mr-1"></i> 最后更新: <span id="lastUpdate">2025-07-07 12:00</span>
+            <i class="fa fa-refresh mr-1"></i> <span id="lastUpdate">2025-07-07 12:00</span>
           </div>
         </div>
       </div>
@@ -149,7 +146,7 @@
     <!-- 页脚 -->
     <footer class="mt-16 text-center text-gray-500 text-sm">
       <p>© 2025 Reader阅读站 - 版权所有</p>
-      <p class="mt-2">建议选择<span class="text-status-online font-medium">绿色状态</span>的线路以获得最佳体验</p>
+      <p class="mt-2">选择<span class="text-status-online font-medium">绿色</span>的线路以开始阅读</p>
     </footer>
   </div>
   
@@ -164,9 +161,9 @@
     
     // 检测配置 - 增加超时时间和重试次数
     const config = {
-      timeout: 8000,        // 增加超时时间到8秒
-      retryCount: 5,        // 增加重试次数到5次
-      retryDelay: 1500      // 增加重试间隔时间到1.5秒
+      timeout: 6000,        // 超时时间
+      retryCount: 2,        // 重试次数
+      retryDelay: 1500      // 重试间隔时间
     };
     
     // 更新最后更新时间为当前时间
@@ -177,7 +174,7 @@
       setInterval(checkAllLines, 180000);
     });
     
-    // 检查所有线路状态
+    // 检查所有线路状态 - 改为并行执行
     async function checkAllLines() {
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
@@ -187,26 +184,37 @@
       document.getElementById('service-status').className = 'status-dot pulse-gray';
       document.getElementById('service-text').textContent = '服务状态: 检测中...';
       
-      let onlineCount = 0;
+      // 创建并行检查的Promise数组
+      const checkPromises = lines.map(line => checkLineWithRetry(line));
       
-      // 顺序检查所有线路，避免并发请求影响
-      for (const line of lines) {
-        const result = await checkLineWithRetry(line);
-        if (result.online) {
-          onlineCount++;
-        }
+      try {
+        // 并行执行所有线路检查
+        const results = await Promise.all(checkPromises);
+        
+        // 计算在线线路数量
+        const onlineCount = results.filter(result => result.online).length;
+        
+        // 更新服务状态
+        updateServiceStatus(onlineCount, results.length);
+      } catch (error) {
+        // 处理Promise.all中的错误
+        console.error('线路检查出错:', error);
+        document.getElementById('service-status').className = 'status-dot static-red';
+        document.getElementById('service-text').textContent = '服务状态: 检测过程中出错';
       }
-      
-      // 更新服务状态
+    }
+    
+    // 更新服务状态显示
+    function updateServiceStatus(onlineCount, totalLines) {
       const serviceStatusElement = document.getElementById('service-status');
       const serviceTextElement = document.getElementById('service-text');
       
-      if (onlineCount === lines.length) {
+      if (onlineCount === totalLines) {
         serviceStatusElement.className = 'status-dot pulse-green';
-        serviceTextElement.textContent = `服务状态: 全部${onlineCount}条线路正常运行`;
+        serviceTextElement.textContent = `服务状态: 所有${onlineCount}条线路正常`;
       } else if (onlineCount > 0) {
         serviceStatusElement.className = 'status-dot static-red';
-        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常，${lines.length - onlineCount}条线路异常`;
+        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常，${totalLines - onlineCount}条异常`;
       } else {
         serviceStatusElement.className = 'status-dot static-red';
         serviceTextElement.textContent = '服务状态: 所有线路均无法连接';
@@ -300,4 +308,3 @@
   </script>
 </body>
 </html>
-    
