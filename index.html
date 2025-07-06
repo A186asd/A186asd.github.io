@@ -159,7 +159,7 @@
       { id: 'line3', url: 'http://xg-4.frp.one:56879', statusElement: 'line3-status' }
     ];
     
-    // 检测配置 - 增加超时时间和重试次数
+    // 检测配置 - 保持原有超时时间和重试次数不变
     const config = {
       timeout: 4500,        // 超时时间
       retryCount: 2,        // 重试次数
@@ -240,15 +240,19 @@
             controller.abort();
           }, config.timeout);
           
-          // 尝试发送请求 - 增加额外的请求选项
+          // 尝试发送请求 - 优化请求头
           const response = await fetch(line.url, {
             method: 'HEAD',
             mode: 'no-cors',
             signal: signal,
-            cache: 'no-cache', // 禁用缓存
+            cache: 'no-store', // 强制不使用缓存
             headers: {
               'Content-Type': 'text/plain',
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+              'Accept': '*/*',
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
             }
           });
           
@@ -305,6 +309,19 @@
         }, 200);
       });
     });
+    
+    // 优化跨域检测逻辑
+    function isSameOrigin(url) {
+      try {
+        const parsedUrl = new URL(url);
+        return (
+          parsedUrl.origin === window.location.origin ||
+          parsedUrl.hostname === window.location.hostname
+        );
+      } catch (e) {
+        return false;
+      }
+    }
   </script>
 </body>
-</html>
+</html>  
