@@ -161,9 +161,9 @@
     
     // 检测配置 - 增加超时时间和重试次数
     const config = {
-      timeout: 6000,        // 超时时间
+      timeout: 3000,        // 超时时间
       retryCount: 2,        // 重试次数
-      retryDelay: 1500      // 重试间隔时间
+      retryDelay: 1000      // 重试间隔时间
     };
     
     // 更新最后更新时间为当前时间
@@ -211,10 +211,10 @@
       
       if (onlineCount === totalLines) {
         serviceStatusElement.className = 'status-dot pulse-green';
-        serviceTextElement.textContent = `服务状态: 所有${onlineCount}条线路正常`;
+        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
       } else if (onlineCount > 0) {
         serviceStatusElement.className = 'status-dot static-red';
-        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常，${totalLines - onlineCount}条异常`;
+        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
       } else {
         serviceStatusElement.className = 'status-dot static-red';
         serviceTextElement.textContent = '服务状态: 所有线路均无法连接';
