@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reader阅读站</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  
+
   <!-- Tailwind配置 -->
   <script>
     tailwind.config = {
@@ -25,304 +26,305 @@
             }
           },
           fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
+            sans: ['Inter','system - ui','sans - serif'],
           },
         },
       }
     }
   </script>
-  
+
   <style type="text/tailwindcss">
     @layer utilities {
-      .content-auto {
-        content-visibility: auto;
+     .content - auto {
+        content - visibility: auto;
       }
-      .text-shadow {
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+     .text - shadow {
+        text - shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
-      .btn-hover {
-        @apply transform transition-all duration-300 hover:scale-105 hover:shadow-lg;
+     .btn - hover {
+        @apply transform transition - all duration - 300 hover:scale - 105 hover:shadow - lg;
       }
-      .gradient-bg {
-        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+     .gradient - bg {
+        background: linear - gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
       }
-      .status-dot {
-        @apply w-3 h-3 rounded-full inline-block ml-2;
+     .status - dot {
+        @apply w - 3 h - 3 rounded - full inline - block ml - 2;
       }
-      .pulse-green {
-        @apply bg-green-500 animate-pulse;
+     .pulse - green {
+        @apply bg - green - 500 animate - pulse;
       }
-      .static-red {
-        @apply bg-red-500;
+     .static - red {
+        @apply bg - red - 500;
       }
-      .pulse-gray {
-        @apply bg-gray-400 animate-pulse;
+     .pulse - gray {
+        @apply bg - gray - 400 animate - pulse;
       }
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-light to-blue-50 min-h-screen font-sans">
-  <div class="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
+
+<body class="bg - gradient - to - br from - light to - blue - 50 min - h - screen font - sans">
+  <div class="container mx - auto px - 4 py - 12 md:py - 20 max - w - 4xl">
     <!-- 网站头部 -->
-    <header class="text-center mb-12 md:mb-16">
-      <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-bold text-dark mb-4 text-shadow">
-        <span class="text-primary">Reader</span><span class="text-accent">阅读站</span>
+    <header class="text - center mb - 12 md:mb - 16">
+      <h1 class="text - [clamp(2.5rem,5vw,4rem)] font - bold text - dark mb - 4 text - shadow">
+        <span class="text - primary">Reader</span><span class="text - accent">阅读站</span>
       </h1>
     </header>
-    
+
     <!-- 主内容区 -->
-    <main class="flex flex-col items-center">
+    <main class="flex flex - col items - center">
       <!-- 线路选择卡片 -->
-      <div class="w-full max-w-xl bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
-        <div class="gradient-bg p-6 text-white">
-          <h2 class="text-2xl font-bold flex items-center">
-            <i class="fa fa-server mr-3"></i>线路选择
+      <div class="w - full max - w - xl bg - white rounded - 2xl shadow - xl overflow - hidden mb - 8">
+        <div class="gradient - bg p - 6 text - white">
+          <h2 class="text - 2xl font - bold flex items - center">
+            <i class="fa fa - server mr - 3"></i>线路选择
           </h2>
-          <p class="opacity-90 mt-1">如全部阻塞，也可尝试红色标识线路</p>
+          <p class="opacity - 90 mt - 1">如全部阻塞，也可尝试红色标识线路</p>
         </div>
-        
-        <div class="p-6 space-y-4">
+
+        <div class="p - 6 space - y - 4">
           <!-- 线路1按钮 -->
-          <a href="http://xg-2.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-xl p-4 btn-hover" id="line1-link">
-            <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mr-4">
-              <i class="fa fa-route text-xl"></i>
+          <a href="http://xg - 2.frp.one:56879" target="_blank" rel="noopener noreferrer"
+             class="flex items - center bg - primary/10 hover:bg - primary/20 text - primary border border - primary/30 rounded - xl p - 4 btn - hover">
+            <div class="w - 12 h - 12 rounded - full bg - primary/20 flex items - center justify - center mr - 4">
+              <i class="fa fa - route text - xl"></i>
             </div>
-            <div class="flex-1">
-              <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg">线路一 <span class="status-dot pulse-gray" id="line1-status"></span></h3>
+            <div class="flex - 1">
+              <div class="flex justify - between items - center">
+                <h3 class="font - semibold text - lg">线路一 <span class="status - dot pulse - gray" id="line1 - status"></span></h3>
               </div>
-              <p class="text-sm text-gray-600 mt-1 truncate">http://xg-2.frp.one:56879</p>
+              <p class="text - sm text - gray - 600 mt - 1 truncate">http://xg - 2.frp.one:56879</p>
             </div>
-            <i class="fa fa-arrow-right text-primary"></i>
+            <i class="fa fa - arrow - right text - primary"></i>
           </a>
-          
+
           <!-- 线路2按钮 -->
-          <a href="http://xg.3.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 rounded-xl p-4 btn-hover" id="line2-link">
-            <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4">
-              <i class="fa fa-route text-xl"></i>
+          <a href="http://xg.3.frp.one:56879" target="_blank" rel="noopener noreferrer"
+             class="flex items - center bg - secondary/10 hover:bg - secondary/20 text - secondary border border - secondary/30 rounded - xl p - 4 btn - hover">
+            <div class="w - 12 h - 12 rounded - full bg - secondary/20 flex items - center justify - center mr - 4">
+              <i class="fa fa - route text - xl"></i>
             </div>
-            <div class="flex-1">
-              <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg">线路二 <span class="status-dot pulse-gray" id="line2-status"></span></h3>
+            <div class="flex - 1">
+              <div class="flex justify - between items - center">
+                <h3 class="font - semibold text - lg">线路二 <span class="status - dot pulse - gray" id="line2 - status"></span></h3>
               </div>
-              <p class="text-sm text-gray-600 mt-1 truncate">http://xg.3.frp.one:56879</p>
+              <p class="text - sm text - gray - 600 mt - 1 truncate">http://xg.3.frp.one:56879</p>
             </div>
-            <i class="fa fa-arrow-right text-secondary"></i>
+            <i class="fa fa - arrow - right text - secondary"></i>
           </a>
-          
+
           <!-- 线路3按钮 -->
-          <a href="http://xg-4.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded-xl p-4 btn-hover" id="line3-link">
-            <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mr-4">
-              <i class="fa fa-route text-xl"></i>
+          <a href="http://xg - 4.frp.one:56879" target="_blank" rel="noopener noreferrer"
+             class="flex items - center bg - accent/10 hover:bg - accent/20 text - accent border border - accent/30 rounded - xl p - 4 btn - hover">
+            <div class="w - 12 h - 12 rounded - full bg - accent/20 flex items - center justify - center mr - 4">
+              <i class="fa fa - route text - xl"></i>
             </div>
-            <div class="flex-1">
-              <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg">线路三 <span class="status-dot pulse-gray" id="line3-status"></span></h3>
+            <div class="flex - 1">
+              <div class="flex justify - between items - center">
+                <h3 class="font - semibold text - lg">线路三 <span class="status - dot pulse - gray" id="line3 - status"></span></h3>
               </div>
-              <p class="text-sm text-gray-600 mt-1 truncate">http://xg-4.frp.one:56879</p>
+              <p class="text - sm text - gray - 600 mt - 1 truncate">http://xg - 4.frp.one:56879</p>
             </div>
-            <i class="fa fa-arrow-right text-accent"></i>
+            <i class="fa fa - arrow - right text - accent"></i>
           </a>
         </div>
       </div>
-      
+
       <!-- 服务状态指示器 -->
-      <div class="w-full max-w-xl bg-white rounded-xl shadow-lg p-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <span class="status-dot pulse-gray" id="service-status"></span>
-            <span class="text-gray-700" id="service-text">服务状态: 检测中...</span>
+      <div class="w - full max - w - xl bg - white rounded - xl shadow - lg p - 4">
+        <div class="flex items - center justify - between">
+          <div class="flex items - center">
+            <span class="status - dot pulse - gray" id="service - status"></span>
+            <span class="text - gray - 700" id="service - text">服务状态: 检测中...</span>
           </div>
-          <div class="text-sm text-gray-500">
-            <i class="fa fa-refresh mr-1"></i> <span id="lastUpdate">2025-07-07 12:00</span>
+          <div class="text - sm text - gray - 500">
+            <i class="fa fa - refresh mr - 1"></i> <span id="lastUpdate">2025 - 07 - 07 12:00</span>
           </div>
         </div>
       </div>
     </main>
-    
+
     <!-- 页脚 -->
-    <footer class="mt-16 text-center text-gray-500 text-sm">
+    <footer class="mt - 16 text - center text - gray - 500 text - sm">
       <p>© 2025 Reader阅读站 - 版权所有</p>
-      <p class="mt-2">选择<span class="text-status-online font-medium">绿色</span>的线路以开始阅读</p>
+      <p class="mt - 2">选择<span class="text - status - online font - medium">绿色</span>的线路以开始阅读</p>
     </footer>
   </div>
-  
+
   <!-- JavaScript -->
   <script>
     // 线路配置
     const lines = [
-      { id: 'line1', url: 'http://xg-2.frp.one:56879', statusElement: 'line1-status', linkElement: 'line1-link' },
-      { id: 'line2', url: 'http://xg.3.frp.one:56879', statusElement: 'line2-status', linkElement: 'line2-link' },
-      { id: 'line3', url: 'http://xg-4.frp.one:56879', statusElement: 'line3-status', linkElement: 'line3-link' }
+      { id: 'line1', url: 'http://xg - 2.frp.one:56879', statusElement: 'line1 - status' },
+      { id: 'line2', url: 'http://xg.3.frp.one:56879', statusElement: 'line2 - status' },
+      { id: 'line3', url: 'http://xg - 4.frp.one:56879', statusElement: 'line3 - status' }
     ];
-    
+    // 新增一个变量，用于标记是否已经跳转
+    let hasJumped = false;
+
     // 检测配置 - 保持原有超时时间和重试次数不变
     const config = {
-      timeout: 4500,        // 超时时间
-      retryCount: 2,        // 重试次数
-      retryDelay: 1000      // 重试间隔时间
+      timeout: 4500, // 超时时间
+      retryCount: 2, // 重试次数
+      retryDelay: 1000 // 重试间隔时间
     };
-    
-    // 是否已经找到可用线路并跳转
-    let isJumped = false;
-    // 存储正在进行的检测任务，用于取消
-    let activeChecks = [];
-    
+
     // 更新最后更新时间为当前时间
-    document.addEventListener('DOMContentLoaded', function() {
-      startAutoJumpCheck();
+    document.addEventListener('DOMContentLoaded', function () {
+      checkAllLines();
+
+      // 每3分钟自动检查一次线路状态
+      setInterval(checkAllLines, 180000);
     });
-    
-    // 自动检测并跳转逻辑
-    async function startAutoJumpCheck() {
+
+    // 检查所有线路状态 - 改为并行执行
+    async function checkAllLines() {
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
       const formattedTime = now.toTimeString().slice(0, 5);
       document.getElementById('lastUpdate').textContent = `${formattedDate} ${formattedTime}`;
-      
-      // 顺序检查每条线路，发现可用立即跳转
-      for (const line of lines) {
-        if (isJumped) break; // 如果已经跳转，停止检查
-        
-        try {
-          const isOnline = await checkLineWithRetry(line);
-          if (isOnline) {
-            jumpToLine(line); // 发现可用线路，立即跳转
-            return; // 跳转后退出函数
-          }
-        } catch (error) {
-          console.log(`线路 ${line.id} 检测出错:`, error);
-        }
+
+      document.getElementById('service - status').className ='status - dot pulse - gray';
+      document.getElementById('service - text').textContent = '服务状态: 检测中...';
+
+      // 创建并行检查的Promise数组
+      const checkPromises = lines.map(line => checkLineWithRetry(line));
+
+      try {
+        // 并行执行所有线路检查
+        const results = await Promise.all(checkPromises);
+
+        // 计算在线线路数量
+        const onlineCount = results.filter(result => result.online).length;
+
+        // 更新服务状态
+        updateServiceStatus(onlineCount, results.length);
+      } catch (error) {
+        // 处理Promise.all中的错误
+        console.error('线路检查出错:', error);
+        document.getElementById('service - status').className ='status - dot static - red';
+        document.getElementById('service - text').textContent = '服务状态: 检测过程中出错';
       }
-      
-      // 所有线路都不可用，更新服务状态
-      document.getElementById('service-status').className = 'status-dot static-red';
-      document.getElementById('service-text').textContent = '服务状态: 所有线路均无法连接';
     }
-    
+
+    // 更新服务状态显示
+    function updateServiceStatus(onlineCount, totalLines) {
+      const serviceStatusElement = document.getElementById('service - status');
+      const serviceTextElement = document.getElementById('service - text');
+
+      if (onlineCount === totalLines) {
+        serviceStatusElement.className ='status - dot pulse - green';
+        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
+      } else if (onlineCount > 0) {
+        serviceStatusElement.className ='status - dot pulse - green';
+        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
+      } else {
+        serviceStatusElement.className ='status - dot static - red';
+        serviceTextElement.textContent = '服务状态: 所有线路均无法连接';
+      }
+    }
+
     // 检查单条线路状态并支持重试
     async function checkLineWithRetry(line) {
       let lastError = null;
-      
+
       // 重置线路状态为检测中
       const statusElement = document.getElementById(line.statusElement);
-      statusElement.className = 'status-dot pulse-gray';
-      
+      statusElement.className ='status - dot pulse - gray';
+
       for (let i = 0; i < config.retryCount; i++) {
-        if (isJumped) break; // 如果已经跳转，停止检查
-        
         try {
           // 使用HEAD请求检测连通性
           const controller = new AbortController();
           const signal = controller.signal;
-          
-          // 存储控制器以便取消
-          activeChecks.push(controller);
-          
+
           // 设置超时
           const timeoutId = setTimeout(() => {
             controller.abort();
           }, config.timeout);
-          
+
           // 尝试发送请求 - 优化请求头
           const response = await fetch(line.url, {
             method: 'HEAD',
-            mode: 'no-cors',
+            mode: 'no - cors',
             signal: signal,
-            cache: 'no-store', // 强制不使用缓存
+            cache: 'no - store', // 强制不使用缓存
             headers: {
-              'Content-Type': 'text/plain',
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+              'Content - Type': 'text/plain',
+              'User - Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
               'Accept': '*/*',
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
+              'Cache - Control': 'no - cache, no - store, must - revalidate',
+              'Pragma': 'no - cache',
               'Expires': '0'
             }
           });
-          
+
           // 清除超时
           clearTimeout(timeoutId);
-          // 从活动检查中移除
-          activeChecks = activeChecks.filter(c => c !== controller);
-          
+
           // 请求成功，更新状态为在线
-          statusElement.className = 'status-dot pulse-green';
-          return true;
-          
+          statusElement.className ='status - dot pulse - green';
+          // 新增判断，若未跳转，则进行跳转
+          if (!hasJumped) {
+            window.location.href = line.url;
+            hasJumped = true;
+          }
+          return { line, online: true };
+
         } catch (error) {
           lastError = error;
-          
+
           // 不是最后一次尝试，继续重试
-          if (i < config.retryCount - 1 && !isJumped) {
+          if (i < config.retryCount - 1) {
             await new Promise(resolve => setTimeout(resolve, config.retryDelay));
           }
         }
       }
-      
+
       // 所有重试都失败，尝试使用img标签进行二次验证
-      if (!isJumped) {
-        try {
-          await verifyWithImage(line.url);
-          statusElement.className = 'status-dot pulse-green';
-          return true;
-        } catch (imgError) {
-          // 二次验证也失败，更新状态为离线
-          statusElement.className = 'status-dot static-red';
-          return false;
+      try {
+        await verifyWithImage(line.url);
+        statusElement.className ='status - dot pulse - green';
+        // 新增判断，若未跳转，则进行跳转
+        if (!hasJumped) {
+          window.location.href = line.url;
+          hasJumped = true;
         }
+        return { line, online: true };
+      } catch (imgError) {
+        // 二次验证也失败，更新状态为离线
+        statusElement.className ='status - dot static - red';
+        return { line, online: false, error: lastError || imgError };
       }
-      
-      return false;
     }
-    
+
     // 使用img标签进行验证，作为备选方案
     function verifyWithImage(url) {
       return new Promise((resolve, reject) => {
-        if (isJumped) {
-          reject(new Error('检测已取消'));
-          return;
-        }
-        
         const img = new Image();
         img.src = `${url}/favicon.ico?t=${Date.now()}`; // 添加时间戳避免缓存
         img.onload = () => resolve();
         img.onerror = () => reject(new Error('Image load failed'));
-        
+
         // 设置图片加载超时
         setTimeout(() => {
           reject(new Error('Image load timeout'));
         }, 5000);
       });
     }
-    
-    // 静默跳转到指定线路
-    function jumpToLine(line) {
-      isJumped = true;
-      
-      // 取消所有正在进行的检测
-      activeChecks.forEach(controller => controller.abort());
-      activeChecks = [];
-      
-      // 直接跳转，无任何提示
-      window.location.href = line.url;
-    }
-    
-    // 添加按钮点击效果（保留原有交互）
+
+    // 添加按钮点击效果
     document.querySelectorAll('a').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        if (!isJumped) {
-          this.classList.add('scale-95');
-          setTimeout(() => {
-            this.classList.remove('scale-95');
-          }, 200);
-        }
+      btn.addEventListener('click', function (e) {
+        this.classList.add('scale - 95');
+        setTimeout(() => {
+          this.classList.remove('scale - 95');
+        }, 200);
       });
     });
-    
-    // 优化跨域检测逻辑（保留原有功能）
+
+    // 优化跨域检测逻辑
     function isSameOrigin(url) {
       try {
         const parsedUrl = new URL(url);
@@ -331,9 +333,3 @@
           parsedUrl.hostname === window.location.hostname
         );
       } catch (e) {
-        return false;
-      }
-    }
-  </script>
-</body>
-</html>
