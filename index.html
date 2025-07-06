@@ -84,7 +84,7 @@
         <div class="p-6 space-y-4">
           <!-- 线路1按钮 -->
           <a href="http://xg-2.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-xl p-4 btn-hover">
+             class="flex items-center bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-xl p-4 btn-hover" id="line1-link">
             <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mr-4">
               <i class="fa fa-route text-xl"></i>
             </div>
@@ -99,7 +99,7 @@
           
           <!-- 线路2按钮 -->
           <a href="http://xg.3.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 rounded-xl p-4 btn-hover">
+             class="flex items-center bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 rounded-xl p-4 btn-hover" id="line2-link">
             <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4">
               <i class="fa fa-route text-xl"></i>
             </div>
@@ -114,7 +114,7 @@
           
           <!-- 线路3按钮 -->
           <a href="http://xg-4.frp.one:56879" target="_blank" rel="noopener noreferrer" 
-             class="flex items-center bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded-xl p-4 btn-hover">
+             class="flex items-center bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded-xl p-4 btn-hover" id="line3-link">
             <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mr-4">
               <i class="fa fa-route text-xl"></i>
             </div>
@@ -154,9 +154,9 @@
   <script>
     // 线路配置
     const lines = [
-      { id: 'line1', url: 'http://xg-2.frp.one:56879', statusElement: 'line1-status' },
-      { id: 'line2', url: 'http://xg.3.frp.one:56879', statusElement: 'line2-status' },
-      { id: 'line3', url: 'http://xg-4.frp.one:56879', statusElement: 'line3-status' }
+      { id: 'line1', url: 'http://xg-2.frp.one:56879', statusElement: 'line1-status', linkElement: 'line1-link' },
+      { id: 'line2', url: 'http://xg.3.frp.one:56879', statusElement: 'line2-status', linkElement: 'line2-link' },
+      { id: 'line3', url: 'http://xg-4.frp.one:56879', statusElement: 'line3-status', linkElement: 'line3-link' }
     ];
     
     // 检测配置 - 保持原有超时时间和重试次数不变
@@ -166,59 +166,41 @@
       retryDelay: 1000      // 重试间隔时间
     };
     
+    // 是否已经找到可用线路并跳转
+    let isJumped = false;
+    // 存储正在进行的检测任务，用于取消
+    let activeChecks = [];
+    
     // 更新最后更新时间为当前时间
     document.addEventListener('DOMContentLoaded', function() {
-      checkAllLines();
-      
-      // 每3分钟自动检查一次线路状态
-      setInterval(checkAllLines, 180000);
+      startAutoJumpCheck();
     });
     
-    // 检查所有线路状态 - 改为并行执行
-    async function checkAllLines() {
+    // 自动检测并跳转逻辑
+    async function startAutoJumpCheck() {
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
       const formattedTime = now.toTimeString().slice(0, 5);
       document.getElementById('lastUpdate').textContent = `${formattedDate} ${formattedTime}`;
       
-      document.getElementById('service-status').className = 'status-dot pulse-gray';
-      document.getElementById('service-text').textContent = '服务状态: 检测中...';
-      
-      // 创建并行检查的Promise数组
-      const checkPromises = lines.map(line => checkLineWithRetry(line));
-      
-      try {
-        // 并行执行所有线路检查
-        const results = await Promise.all(checkPromises);
+      // 顺序检查每条线路，发现可用立即跳转
+      for (const line of lines) {
+        if (isJumped) break; // 如果已经跳转，停止检查
         
-        // 计算在线线路数量
-        const onlineCount = results.filter(result => result.online).length;
-        
-        // 更新服务状态
-        updateServiceStatus(onlineCount, results.length);
-      } catch (error) {
-        // 处理Promise.all中的错误
-        console.error('线路检查出错:', error);
-        document.getElementById('service-status').className = 'status-dot static-red';
-        document.getElementById('service-text').textContent = '服务状态: 检测过程中出错';
+        try {
+          const isOnline = await checkLineWithRetry(line);
+          if (isOnline) {
+            jumpToLine(line); // 发现可用线路，立即跳转
+            return; // 跳转后退出函数
+          }
+        } catch (error) {
+          console.log(`线路 ${line.id} 检测出错:`, error);
+        }
       }
-    }
-    
-    // 更新服务状态显示
-    function updateServiceStatus(onlineCount, totalLines) {
-      const serviceStatusElement = document.getElementById('service-status');
-      const serviceTextElement = document.getElementById('service-text');
       
-      if (onlineCount === totalLines) {
-        serviceStatusElement.className = 'status-dot pulse-green';
-        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
-      } else if (onlineCount > 0) {
-        serviceStatusElement.className = 'status-dot static-green';
-        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
-      } else {
-        serviceStatusElement.className = 'status-dot static-red';
-        serviceTextElement.textContent = '服务状态: 所有线路均无法连接';
-      }
+      // 所有线路都不可用，更新服务状态
+      document.getElementById('service-status').className = 'status-dot static-red';
+      document.getElementById('service-text').textContent = '服务状态: 所有线路均无法连接';
     }
     
     // 检查单条线路状态并支持重试
@@ -230,10 +212,15 @@
       statusElement.className = 'status-dot pulse-gray';
       
       for (let i = 0; i < config.retryCount; i++) {
+        if (isJumped) break; // 如果已经跳转，停止检查
+        
         try {
           // 使用HEAD请求检测连通性
           const controller = new AbortController();
           const signal = controller.signal;
+          
+          // 存储控制器以便取消
+          activeChecks.push(controller);
           
           // 设置超时
           const timeoutId = setTimeout(() => {
@@ -258,36 +245,47 @@
           
           // 清除超时
           clearTimeout(timeoutId);
+          // 从活动检查中移除
+          activeChecks = activeChecks.filter(c => c !== controller);
           
           // 请求成功，更新状态为在线
           statusElement.className = 'status-dot pulse-green';
-          return { line, online: true };
+          return true;
           
         } catch (error) {
           lastError = error;
           
           // 不是最后一次尝试，继续重试
-          if (i < config.retryCount - 1) {
+          if (i < config.retryCount - 1 && !isJumped) {
             await new Promise(resolve => setTimeout(resolve, config.retryDelay));
           }
         }
       }
       
       // 所有重试都失败，尝试使用img标签进行二次验证
-      try {
-        await verifyWithImage(line.url);
-        statusElement.className = 'status-dot pulse-green';
-        return { line, online: true };
-      } catch (imgError) {
-        // 二次验证也失败，更新状态为离线
-        statusElement.className = 'status-dot static-red';
-        return { line, online: false, error: lastError || imgError };
+      if (!isJumped) {
+        try {
+          await verifyWithImage(line.url);
+          statusElement.className = 'status-dot pulse-green';
+          return true;
+        } catch (imgError) {
+          // 二次验证也失败，更新状态为离线
+          statusElement.className = 'status-dot static-red';
+          return false;
+        }
       }
+      
+      return false;
     }
     
     // 使用img标签进行验证，作为备选方案
     function verifyWithImage(url) {
       return new Promise((resolve, reject) => {
+        if (isJumped) {
+          reject(new Error('检测已取消'));
+          return;
+        }
+        
         const img = new Image();
         img.src = `${url}/favicon.ico?t=${Date.now()}`; // 添加时间戳避免缓存
         img.onload = () => resolve();
@@ -300,17 +298,31 @@
       });
     }
     
-    // 添加按钮点击效果
+    // 静默跳转到指定线路
+    function jumpToLine(line) {
+      isJumped = true;
+      
+      // 取消所有正在进行的检测
+      activeChecks.forEach(controller => controller.abort());
+      activeChecks = [];
+      
+      // 直接跳转，无任何提示
+      window.location.href = line.url;
+    }
+    
+    // 添加按钮点击效果（保留原有交互）
     document.querySelectorAll('a').forEach(btn => {
       btn.addEventListener('click', function(e) {
-        this.classList.add('scale-95');
-        setTimeout(() => {
-          this.classList.remove('scale-95');
-        }, 200);
+        if (!isJumped) {
+          this.classList.add('scale-95');
+          setTimeout(() => {
+            this.classList.remove('scale-95');
+          }, 200);
+        }
       });
     });
     
-    // 优化跨域检测逻辑
+    // 优化跨域检测逻辑（保留原有功能）
     function isSameOrigin(url) {
       try {
         const parsedUrl = new URL(url);
@@ -324,4 +336,4 @@
     }
   </script>
 </body>
-</html>  
+</html>
