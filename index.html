@@ -136,7 +136,7 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <span class="status-dot pulse-gray" id="service-status"></span>
-            <span class="text-gray-700" id="service-text">服务状态: 检测中...</span>
+            <span class="text-gray-700" id="service-text"> 服务状态: 检测中...</span>
           </div>
           <div class="text-sm text-gray-500">
             <i class="fa fa-refresh mr-1"></i> <span id="lastUpdate">2025-07-07 12:00</span>
@@ -186,7 +186,7 @@
       document.getElementById('lastUpdate').textContent = `${formattedDate} ${formattedTime}`;
 
       document.getElementById('service-status').className ='status-dot pulse-gray';
-      document.getElementById('service-text').textContent = '服务状态: 检测中...';
+      document.getElementById('service-text').textContent = ' 服务状态: 检测中...';
 
       // 创建并行检查的Promise数组
       const checkPromises = lines.map(line => checkLineWithRetry(line));
@@ -204,7 +204,7 @@
         // 处理Promise.all中的错误
         console.error('线路检查出错:', error);
         document.getElementById('service-status').className ='status-dot static-red';
-        document.getElementById('service-text').textContent = '服务状态: 检测过程中出错';
+        document.getElementById('service-text').textContent = ' 服务状态: 检测过程中出错';
       }
     }
 
@@ -215,13 +215,13 @@
 
       if (onlineCount === totalLines) {
         serviceStatusElement.className ='status-dot pulse-green';
-        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
+        serviceTextElement.textContent = ` 服务状态: ${onlineCount}条线路正常`;
       } else if (onlineCount > 0) {
         serviceStatusElement.className ='status-dot pulse-green';
-        serviceTextElement.textContent = `服务状态: ${onlineCount}条线路正常`;
+        serviceTextElement.textContent = ` 服务状态: ${onlineCount}条线路正常`;
       } else {
         serviceStatusElement.className ='status-dot static-red';
-        serviceTextElement.textContent = '服务状态: 所有线路均无法连接';
+        serviceTextElement.textContent = ' 服务状态: 所有线路均无法连接';
       }
     }
 
