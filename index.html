@@ -149,10 +149,7 @@
 
         /* 状态标签样式 */
         #service-status, 
-        #line1-status, 
-        #line2-status, 
-        #line3-status,
-        #line4-status {
+        .line-status {
             padding: 3px 10px;
             border-radius: 12px;
             font-size: 0.85rem;
@@ -200,7 +197,7 @@
     <div class="container">
         <!-- 网站头部 -->
         <header>
-            <h1>Reader阅读站</h1>
+            <h1 id="site-title">Reader阅读站</h1>
         </header>
 
         <!-- 主内容区 -->
@@ -212,46 +209,8 @@
                     <p class="section-description">部分浏览器无法检测联通性，全部阻塞时可逐个尝试访问异常线路。</p>
                 </div>
 
-                <div class="lines-container">
-                    <!-- 线路1按钮 -->
-                    <a href="http://cd-2.frp.one:18889" target="_blank" rel="noopener noreferrer" class="line-card">
-                        <div>
-                            <div class="line-title">
-                                <h3>成都 <span id="line1-status"></span></h3>
-                            </div>
-                            <p class="line-url">http://cd-1.frp.one:18889</p>
-                        </div>
-                    </a>
-
-                    <!-- 线路2按钮 -->
-                    <a href="http://sj.frp.one:18889" target="_blank" rel="noopener noreferrer" class="line-card">
-                        <div>
-                            <div class="line-title">
-                                <h3>圣何塞 <span id="line2-status"></span></h3>
-                            </div>
-                            <p class="line-url">http://sj.frp.one:18889</p>
-                        </div>
-                    </a>
-
-                    <!-- 线路3按钮 -->
-                    <a href="http://jp.5.frp.one:18889" target="_blank" rel="noopener noreferrer" class="line-card">
-                        <div>
-                            <div class="line-title">
-                                <h3>东京 <span id="line3-status"></span></h3>
-                            </div>
-                            <p class="line-url">http://jp.5.frp.one:18889</p>
-                        </div>
-                    </a>
-
-                    <!-- 线路4按钮 -->
-                    <a href="http://sh-2.frp.one:18889" target="_blank" rel="noopener noreferrer" class="line-card">
-                        <div>
-                            <div class="line-title">
-                                <h3>香港 <span id="line4-status"></span></h3>
-                            </div>
-                            <p class="line-url">http://xg-4.frp.one:18889</p>
-                        </div>
-                    </a>
+                <div class="lines-container" id="lines-container">
+                    <!-- 线路会通过JS自动生成 -->
                 </div>
             </div>
 
@@ -264,7 +223,7 @@
                     </div>
                     <div class="status-item">
                         <span>最后更新: </span>
-                        <span id="lastUpdate">2025-07-07 12:00</span>
+                        <span id="lastUpdate">9999-99-99 99:99</span>
                     </div>
                 </div>
             </div>
@@ -272,42 +231,85 @@
 
         <!-- 页脚 -->
         <footer>
-            <p>© 2025 Reader阅读站 - 版权所有</p>
+            <p>© 2026 Reader阅读站 - 版权所有</p>
             <p>选择绿色的线路以开始阅读</p>
         </footer>
     </div>
 
     <!-- JavaScript -->
     <script>
-        // 线路配置
-        const lines = [
-            { id: 'line1', url: 'http://cd-1.frp.one:18889', statusElement: 'line1-status' },
-            { id: 'line2', url: 'http://sj.frp.one:18889', statusElement: 'line2-status' },
-            { id: 'line3', url: 'http://jp.5.frp.one:18889', statusElement: 'line3-status' },
-            { id: 'line4', url: 'http://xg-4.frp.one:18889', statusElement: 'line4-status' }
-        ];
+        // ====================== 【全局可修改参数】 开始 ======================
+        const GLOBAL_CONFIG = {
+            // 网站标题
+            siteTitle: "Reader阅读站",
+            
+            // 线路配置（增删改这里即可，自动生成页面）
+            lines: [
+                { name: "成都",   url: "http://cd-1.frp.one:18889", jumpUrl: "http://cd-2.frp.one:18889" },
+                { name: "台湾", url: "http://tw.frp.one:18889",  jumpUrl: "http://tw.frp.one:18889" },
+                { name: "东京",   url: "http://jp.5.frp.one:18889", jumpUrl: "http://jp.5.frp.one:18889" },
+                { name: "香港",   url: "http://xg-4.frp.one:18889", jumpUrl: "http://sh-2.frp.one:18889" }
+            ],
+            
+            // 检测配置
+            check: {
+                timeout: 10000,      // 超时时间
+                retryCount: 2,       // 重试次数
+                retryDelay: 800,     // 重试间隔
+                checkInterval: 15000 // 自动检测间隔
+            },
+            
+            // 自动跳转（发现可用线路直接跳转）
+            autoJump: true
+        };
+        // ====================== 【全局可修改参数】 结束 ======================
+
+        // 初始化页面标题
+        document.getElementById('site-title').textContent = GLOBAL_CONFIG.siteTitle;
+        document.title = GLOBAL_CONFIG.siteTitle;
+
+        // 给线路添加ID和状态元素ID
+        const lines = GLOBAL_CONFIG.lines.map((item, index) => ({
+            id: `line${index + 1}`,
+            name: item.name,
+            url: item.url,
+            jumpUrl: item.jumpUrl,
+            statusElement: `line${index + 1}-status`
+        }));
+
+        // 动态生成线路卡片
+        const container = document.getElementById('lines-container');
+        lines.forEach(line => {
+            const card = document.createElement('a');
+            card.href = line.jumpUrl;
+            card.target = '_blank';
+            card.rel = 'noopener noreferrer';
+            card.className = 'line-card';
+            
+            card.innerHTML = `
+                <div>
+                    <div class="line-title">
+                        <h3>${line.name} <span id="${line.statusElement}" class="line-status"></span></h3>
+                    </div>
+                    <p class="line-url">${line.url}</p>
+                </div>
+            `;
+            container.appendChild(card);
+        });
 
         // 跳转标志和在线计数
         let hasJumped = false;
         let onlineCount = 0;
 
-        // 检测配置（优化适配移动端）
-        const config = {
-            timeout: 10000,        // 延长超时时间，适配移动网络
-            retryCount: 2,         // 减少重试次数，提升检测速度
-            retryDelay: 800        // 缩短重试间隔
-        };
-
         // 页面加载完成后开始检测
         document.addEventListener('DOMContentLoaded', function () {
             startLineChecking();
-            // 每15秒自动检查一次（减少移动端资源占用）
-            setInterval(startLineChecking, 15000);
+            setInterval(startLineChecking, GLOBAL_CONFIG.check.checkInterval);
         });
 
         // 开始检查所有线路状态
         function startLineChecking() {
-            // 更新最后更新时间
+            // 更新时间
             const now = new Date();
             const formattedDate = now.toISOString().slice(0, 10);
             const formattedTime = now.toTimeString().slice(0, 5);
@@ -317,30 +319,26 @@
             document.getElementById('service-status').textContent = '检测中...';
             document.getElementById('service-text').textContent = ' 服务状态: 检测中...';
             updateStatusStyles();
-            
-            // 重置在线计数
             onlineCount = 0;
 
-            // 检查每条线路
+            // 检查线路
             lines.forEach(line => {
                 checkLineStatus(line).then(result => {
                     if (result.online) {
                         onlineCount++;
                         updateServiceStatus();
 
-                        // 发现第一条可用线路就立即跳转
-                        if (!hasJumped) {
+                        // 自动跳转
+                        if (GLOBAL_CONFIG.autoJump && !hasJumped) {
                             hasJumped = true;
-                            window.location.href = result.line.url;
+                            window.location.href = result.line.jumpUrl;
                         }
                     }
-                }).catch(error => {
-                    console.error(`线路 ${line.id} 检测出错:`, error);
                 });
             });
         }
 
-        // 更新服务状态显示
+        // 更新服务状态
         function updateServiceStatus() {
             const serviceStatusElement = document.getElementById('service-status');
             const serviceTextElement = document.getElementById('service-text');
@@ -355,55 +353,44 @@
                 serviceStatusElement.textContent = '异常';
                 serviceTextElement.textContent = ' 服务状态: 所有线路均无法连接';
             }
-
             updateStatusStyles();
         }
 
         // 更新状态样式
         function updateStatusStyles() {
-            // 更新服务状态样式
-            const serviceStatus = document.getElementById('service-status').textContent;
-            const serviceStatusElement = document.getElementById('service-status');
-            serviceStatusElement.className = '';
+            const serviceStatus = document.getElementById('service-status');
+            serviceStatus.className = '';
             
-            if (serviceStatus === '正常') serviceStatusElement.classList.add('status-normal');
-            else if (serviceStatus === '异常') serviceStatusElement.classList.add('status-error');
-            else serviceStatusElement.classList.add('status-checking');
+            if (serviceStatus.textContent === '正常') serviceStatus.classList.add('status-normal');
+            else if (serviceStatus.textContent === '异常') serviceStatus.classList.add('status-error');
+            else serviceStatus.classList.add('status-checking');
 
-            // 更新所有线路状态样式
             lines.forEach(line => {
-                const statusElement = document.getElementById(line.statusElement);
-                const status = statusElement.textContent;
-                statusElement.className = '';
-                
-                if (status === '正常') statusElement.classList.add('status-normal');
-                else if (status === '异常') statusElement.classList.add('status-error');
-                else statusElement.classList.add('status-checking');
+                const el = document.getElementById(line.statusElement);
+                el.className = 'line-status';
+                if (el.textContent === '正常') el.classList.add('status-normal');
+                else if (el.textContent === '异常') el.classList.add('status-error');
+                else el.classList.add('status-checking');
             });
         }
 
-        // 精简后的线路检测方法（仅保留CORS请求，适配所有设备）
+        // 检测线路
         async function checkLineStatus(line) {
             const statusElement = document.getElementById(line.statusElement);
             statusElement.textContent = '检测中...';
             updateStatusStyles();
 
-            // 添加随机参数防缓存，确保检测准确性
             const urlWithCacheBust = `${line.url}?t=${Date.now()}`;
 
             try {
-                // 仅使用CORS请求检测，兼容手机和电脑所有现代浏览器
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), config.timeout);
+                const timeoutId = setTimeout(() => controller.abort(), GLOBAL_CONFIG.check.timeout);
 
-                const response = await fetch(urlWithCacheBust, {
-                    method: 'GET',       // 改用GET请求，提高兼容性
+                await fetch(urlWithCacheBust, {
+                    method: 'GET',
                     mode: 'no-cors',
                     signal: controller.signal,
-                    cache: 'no-store',
-                    headers: {
-                        'Cache-Control': 'no-cache'
-                    }
+                    cache: 'no-store'
                 });
 
                 clearTimeout(timeoutId);
@@ -411,13 +398,12 @@
                 updateStatusStyles();
                 return { line, online: true };
             } catch (error) {
-                // 重试机制
                 let retryCount = 0;
-                while (retryCount < config.retryCount) {
+                while (retryCount < GLOBAL_CONFIG.check.retryCount) {
                     try {
-                        await new Promise(resolve => setTimeout(resolve, config.retryDelay));
+                        await new Promise(r => setTimeout(r, GLOBAL_CONFIG.check.retryDelay));
                         const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), config.timeout);
+                        const timeoutId = setTimeout(() => controller.abort(), GLOBAL_CONFIG.check.timeout);
 
                         await fetch(urlWithCacheBust, {
                             method: 'GET',
@@ -430,9 +416,8 @@
                         statusElement.textContent = '正常';
                         updateStatusStyles();
                         return { line, online: true };
-                    } catch (retryError) {
+                    } catch {
                         retryCount++;
-                        if (retryCount >= config.retryCount) throw retryError;
                     }
                 }
 
