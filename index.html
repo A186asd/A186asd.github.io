@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,59 +16,74 @@
         body {
             background-color: #f5f7fa;
             color: #333;
+            line-height: 1.5;
             padding: 10px;
+        }
+        @media (min-width: 768px) {
+            body {
+                padding: 15px;
+            }
         }
 
         .container {
-            max-width: 820px;
+            max-width: 860px;
             margin: 0 auto;
-            background: #fff;
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
             overflow: hidden;
         }
 
         header {
             background-color: #2c3e50;
-            color: #fff;
-            padding: 14px;
+            color: white;
+            padding: 16px 15px;
             text-align: center;
         }
-
         header h1 {
-            font-size: clamp(1.3rem, 4vw, 1.8rem);
-            font-weight: 500;
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         main {
-            padding: 16px 12px;
+            padding: 18px 15px;
+        }
+
+        .line-section {
+            margin-bottom: 20px;
         }
 
         .section-title {
             text-align: center;
             color: #2c3e50;
-            font-size: clamp(1rem, 3vw, 1.25rem);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
         }
 
-        .section-desc {
+        .section-description {
             text-align: center;
             color: #666;
-            font-size: 0.85rem;
-            margin-bottom: 16px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
             padding: 0 5px;
         }
 
-        /* 线路卡片栅格布局 - 修改此处：手机默认两列 */
         .lines-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 10px;
         }
-
+        @media (min-width: 480px) {
+            .lines-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
         @media (min-width: 768px) {
             .lines-container {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
             }
         }
 
@@ -76,42 +92,69 @@
             touch-action: manipulation;
         }
 
-        .line-card > div {
-            background: #fff;
-            border: 1px solid #e1e4e8;
+        .line-card div {
+            background-color: #fff;
             border-radius: 6px;
-            padding: 12px;
-            height: 100%;
-            transition: all 0.2s ease;
+            padding: 14px;
+            border: 1px solid #e1e4e8;
+            transition: all 0.25s ease;
+            height: 100%; 
         }
 
-        .line-card > div:hover {
+        .line-card div:hover {
             transform: translateY(-2px);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
             border-color: #b1b5bb;
         }
 
-        .line-name {
+        .line-title {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            margin-bottom: 6px;
             color: #2c3e50;
-            font-size: 0.98rem;
-            margin-bottom: 5px;
+            font-size: 1rem;
         }
 
         .line-url {
             color: #666;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             word-break: break-all;
-            line-height: 1.3;
+            line-height: 1.4;
         }
 
-        /* 状态标签样式 */
+        .status-section {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 14px;
+            border: 1px solid #e1e4e8;
+        }
+
+        .status-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        @media (min-width: 480px) {
+            .status-info {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .status-item {
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+
+        #service-status, 
         .line-status {
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 10px;
-            font-size: 0.7rem;
+            font-size: 0.78rem;
             font-weight: 500;
             white-space: nowrap;
         }
@@ -119,6 +162,10 @@
         .status-normal {
             background-color: #d4edda;
             color: #155724;
+        }
+        .status-partial {
+            background-color: #fff3cd;
+            color: #856404;
         }
         .status-error {
             background-color: #f8d7da;
@@ -131,55 +178,82 @@
 
         footer {
             text-align: center;
-            padding: 12px;
+            padding: 15px 10px;
+            margin-top: 15px;
             color: #666;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             border-top: 1px solid #e1e4e8;
         }
-
-        /* 探测iframe */
-        .detect-iframe {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border: none;
-            visibility: hidden;
+        footer p {
+            margin: 3px 0;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
+        <!-- 网站头部 -->
         <header>
             <h1 id="site-title">Reader阅读站</h1>
         </header>
 
+        <!-- 主内容区 -->
         <main>
-            <h2 class="section-title">线路选择</h2>
-            <p class="section-desc">本页面至多只会存在一个正常线路</p>
+            <!-- 线路选择卡片 -->
+            <div class="line-section">
+                <div>
+                    <h2 class="section-title">线路选择</h2>
+                    <p class="section-description">部分浏览器无法检测联通性，全部阻塞时可逐个尝试访问异常线路。</p>
+                </div>
 
-            <div class="lines-container" id="lines-container"></div>
+                <div class="lines-container" id="lines-container">
+                    <!-- 线路会通过JS自动生成 -->
+                </div>
+            </div>
+
+            <!-- 服务状态指示器 -->
+            <div class="status-section">
+                <div class="status-info">
+                    <div class="status-item">
+                        <span id="service-status"></span>
+                        <span id="service-text"> 服务状态: 检测中...</span>
+                    </div>
+                    <div class="status-item">
+                        <span>最后更新: </span>
+                        <span id="lastUpdate">9999-99-99 99:99</span>
+                    </div>
+                </div>
+            </div>
         </main>
 
+        <!-- 页脚 -->
         <footer>
-            <p>© 2026 Reader阅读站 | 线路全炸速速反馈</p>
+            <p>© 2026 Reader阅读站 - 版权所有</p>
+            <p>选择绿色的线路以开始阅读</p>
         </footer>
     </div>
 
+    <!-- JavaScript -->
     <script>
         const GLOBAL_CONFIG = {
+            // 网站标题
             siteTitle: "Reader阅读站",
+            
             lines: [
                 { name: "台湾", url: "http://tw.frp.one:18889" },
                 { name: "伦敦", url: "http://uk.frp.one:18889" },
-                { name: "香港", url: "http://xg-4.frp.one:18889" },
-		{ name: "内网", url: "http://192.168.5.1:4568" }
+                { name: "香港", url: "http://xg-4.frp.one:18889" }
             ],
+            
+            // 检测配置
             check: {
-                timeout: 10000,
-                retryCount: 2,
-                retryDelay: 800,
-                checkInterval: 60000
+                timeout: 10000,      // 超时时间
+                retryCount: 2,       // 重试次数
+                retryDelay: 800,     // 重试间隔
+                checkInterval: 15000 // 自动检测间隔
             },
+            
+            // 自动跳转（发现可用线路直接跳转）
             autoJump: false
         };
 
@@ -190,7 +264,7 @@
             id: `line${index + 1}`,
             name: item.name,
             url: item.url,
-            jumpUrl: item.url,
+            jumpUrl: item.url, 
             statusElement: `line${index + 1}-status`
         }));
 
@@ -201,11 +275,11 @@
             card.target = '_blank';
             card.rel = 'noopener noreferrer';
             card.className = 'line-card';
+            
             card.innerHTML = `
                 <div>
-                    <div class="line-name">
-                        ${line.name}
-                        <span id="${line.statusElement}" class="line-status"></span>
+                    <div class="line-title">
+                        <h3>${line.name} <span id="${line.statusElement}" class="line-status"></span></h3>
                     </div>
                     <p class="line-url">${line.url}</p>
                 </div>
@@ -214,6 +288,7 @@
         });
 
         let hasJumped = false;
+        let onlineCount = 0;
 
         document.addEventListener('DOMContentLoaded', function () {
             startLineChecking();
@@ -221,22 +296,63 @@
         });
 
         function startLineChecking() {
+
+            const now = new Date();
+            const formattedDate = now.toISOString().slice(0, 10);
+            const formattedTime = now.toTimeString().slice(0, 5);
+            document.getElementById('lastUpdate').textContent = `${formattedDate} ${formattedTime}`;
+
+            document.getElementById('service-status').textContent = '检测中';
+            document.getElementById('service-text').textContent = ' 服务状态: 检测中';
+            updateStatusStyles();
+            onlineCount = 0;
+
             lines.forEach(line => {
-                checkLineStatus(line);
+                checkLineStatus(line).then(result => {
+                    if (result.online) {
+                        onlineCount++;
+                        updateServiceStatus();
+
+                        if (GLOBAL_CONFIG.autoJump && !hasJumped) {
+                            hasJumped = true;
+                            window.location.href = result.line.jumpUrl;
+                        }
+                    }
+                });
             });
         }
 
+        function updateServiceStatus() {
+            const serviceStatusElement = document.getElementById('service-status');
+            const serviceTextElement = document.getElementById('service-text');
+
+            if (onlineCount === lines.length) {
+                serviceStatusElement.textContent = '正常';
+                serviceTextElement.textContent = ` 服务状态: ${onlineCount}/${lines.length}条线路正常`;
+            } else if (onlineCount > 0) {
+                serviceStatusElement.textContent = '正常';
+                serviceTextElement.textContent = ` 服务状态: ${onlineCount}/${lines.length}条线路正常`;
+            } else {
+                serviceStatusElement.textContent = '异常';
+                serviceTextElement.textContent = ' 服务状态: 所有线路均无法连接';
+            }
+            updateStatusStyles();
+        }
+
         function updateStatusStyles() {
+            const serviceStatus = document.getElementById('service-status');
+            serviceStatus.className = '';
+            
+            if (serviceStatus.textContent === '正常') serviceStatus.classList.add('status-normal');
+            else if (serviceStatus.textContent === '异常') serviceStatus.classList.add('status-error');
+            else serviceStatus.classList.add('status-checking');
+
             lines.forEach(line => {
                 const el = document.getElementById(line.statusElement);
                 el.className = 'line-status';
-                if (el.textContent === '正常') {
-                    el.classList.add('status-normal');
-                } else if (el.textContent === '异常') {
-                    el.classList.add('status-error');
-                } else {
-                    el.classList.add('status-checking');
-                }
+                if (el.textContent === '正常') el.classList.add('status-normal');
+                else if (el.textContent === '异常') el.classList.add('status-error');
+                else el.classList.add('status-checking');
             });
         }
 
@@ -245,60 +361,54 @@
             statusElement.textContent = '检测中';
             updateStatusStyles();
 
-            const { timeout, retryCount, retryDelay } = GLOBAL_CONFIG.check;
-            let currentTry = 0;
+            const urlWithCacheBust = `${line.url}?t=${Date.now()}`;
 
-            const detect = () => {
-                return new Promise((resolve) => {
-                    const checkUrl = `${line.url}?t=${Date.now()}`;
-                    const iframe = document.createElement('iframe');
-                    iframe.className = 'detect-iframe';
-                    iframe.src = checkUrl;
-                    document.body.appendChild(iframe);
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), GLOBAL_CONFIG.check.timeout);
 
-                    let timer = setTimeout(() => {
-                        iframe.onload = null;
-                        iframe.onerror = null;
-                        document.body.removeChild(iframe);
-                        resolve(false);
-                    }, timeout);
-
-                    iframe.onload = () => {
-                        clearTimeout(timer);
-                        document.body.removeChild(iframe);
-                        resolve(true);
-                    };
-
-                    iframe.onerror = () => {
-                        clearTimeout(timer);
-                        document.body.removeChild(iframe);
-                        resolve(false);
-                        document.body.removeChild(iframe);
-                        resolve(false);
-                    };
+                await fetch(urlWithCacheBust, {
+                    method: 'GET',
+                    mode: 'no-cors',
+                    signal: controller.signal,
+                    cache: 'no-store'
                 });
-            };
 
-            while (currentTry <= retryCount) {
-                const isOnline = await detect();
-                if (isOnline) {
-                    statusElement.textContent = '正常';
-                    updateStatusStyles();
-                    if (GLOBAL_CONFIG.autoJump && !hasJumped) {
-                        hasJumped = true;
-                        window.location.href = line.jumpUrl;
+                clearTimeout(timeoutId);
+                statusElement.textContent = '正常';
+                updateStatusStyles();
+                return { line, online: true };
+            } catch (error) {
+                let retryCount = 0;
+                while (retryCount < GLOBAL_CONFIG.check.retryCount) {
+                    try {
+                        await new Promise(r => setTimeout(r, GLOBAL_CONFIG.check.retryDelay));
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), GLOBAL_CONFIG.check.timeout);
+
+                        await fetch(urlWithCacheBust, {
+                            method: 'GET',
+                            mode: 'no-cors',
+                            signal: controller.signal,
+                            cache: 'no-store'
+                        });
+
+                        await new Promise(r => setTimeout(r, GLOBAL_CONFIG.check.retryDelay));
+                        clearTimeout(timeoutId);
+                        statusElement.textContent = '正常';
+                        updateStatusStyles();
+                        return { line, online: true };
+                    } catch {
+                        retryCount++;
                     }
-                    return;
                 }
-                currentTry++;
-                if (currentTry <= retryCount) {
-                    await new Promise(r => setTimeout(r, retryDelay));
-                }
-            }
 
-            statusElement.textContent = '异常';
-            updateStatusStyles();
+                statusElement.textContent = '异常';
+                updateStatusStyles();
+                return { line, online: false };
+            }
         }
     </script>
 </body>
+
 </html>
