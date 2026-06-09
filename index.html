@@ -254,7 +254,7 @@
             },
             
             // 自动跳转（发现可用线路直接跳转）
-            autoJump: true
+            autoJump: false
         };
 
         document.getElementById('site-title').textContent = GLOBAL_CONFIG.siteTitle;
@@ -302,8 +302,8 @@
             const formattedTime = now.toTimeString().slice(0, 5);
             document.getElementById('lastUpdate').textContent = `${formattedDate} ${formattedTime}`;
 
-            document.getElementById('service-status').textContent = '检测中...';
-            document.getElementById('service-text').textContent = ' 服务状态: 检测中...';
+            document.getElementById('service-status').textContent = '检测中';
+            document.getElementById('service-text').textContent = ' 服务状态: 检测中';
             updateStatusStyles();
             onlineCount = 0;
 
@@ -358,7 +358,7 @@
 
         async function checkLineStatus(line) {
             const statusElement = document.getElementById(line.statusElement);
-            statusElement.textContent = '检测中...';
+            statusElement.textContent = '检测中';
             updateStatusStyles();
 
             const urlWithCacheBust = `${line.url}?t=${Date.now()}`;
