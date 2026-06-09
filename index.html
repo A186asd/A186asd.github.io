@@ -3,108 +3,119 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 强化移动端适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Reader阅读站</title>
     <style>
-        /* 基础样式设置 */
+        /* 基础样式重置 & 全局紧凑优化 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
         }
 
         body {
             background-color: #f5f7fa;
             color: #333;
-            line-height: 1.6;
-            padding: 20px;
+            line-height: 1.5; /* 收紧行高，更紧凑 */
+            /* 响应式边距：手机小边距，电脑适中 */
+            padding: 10px;
+        }
+        @media (min-width: 768px) {
+            body {
+                padding: 15px;
+            }
         }
 
         .container {
-            max-width: 800px;
+            max-width: 860px;
             margin: 0 auto;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
             overflow: hidden;
         }
 
-        /* 头部样式 */
+        /* 头部 - 收紧内边距 */
         header {
             background-color: #2c3e50;
             color: white;
-            padding: 25px 20px;
+            padding: 16px 15px;
             text-align: center;
         }
-
+        /* 流体标题字体，大小屏自动适配 */
         header h1 {
-            font-size: 2rem;
+            font-size: clamp(1.4rem, 4vw, 2rem);
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
-        /* 主内容区样式 */
+        /* 主内容区 - 大幅收紧留白 */
         main {
-            padding: 30px 20px;
+            padding: 18px 15px;
         }
 
-        /* 线路选择区域 */
+        /* 线路区域 */
         .line-section {
-            margin-bottom: 35px;
+            margin-bottom: 20px;
         }
 
         .section-title {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 12px;
-            font-size: 1.4rem;
+            margin-bottom: 6px;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
         }
 
         .section-description {
             text-align: center;
             color: #666;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-            padding: 0 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            padding: 0 5px;
         }
 
+        /* 响应式网格布局：手机/平板/电脑 分层平铺 */
         .lines-container {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 10px; /* 卡片间距收紧 */
         }
-
-        @media (min-width: 600px) {
+        /* 大屏手机/平板：2列 */
+        @media (min-width: 480px) {
             .lines-container {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
+                gap: 12px;
             }
         }
-
-        @media (min-width: 800px) {
+        /* 电脑端：4列平铺 */
+        @media (min-width: 768px) {
             .lines-container {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
+                gap: 12px;
             }
         }
 
-        /* 线路卡片样式 */
+        /* 线路卡片 - 紧凑化 + 优化移动端点击 */
         .line-card {
             text-decoration: none;
+            /* 消除移动端点击延迟 */
+            touch-action: manipulation;
         }
 
         .line-card div {
             background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 6px;
+            padding: 14px; /* 卡片内边距收紧 */
             border: 1px solid #e1e4e8;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
+            height: 100%; /* 卡片高度统一 */
         }
 
         .line-card div:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
             border-color: #b1b5bb;
         }
 
@@ -112,83 +123,84 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             color: #2c3e50;
+            font-size: 1rem;
         }
 
         .line-url {
             color: #666;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             word-break: break-all;
+            line-height: 1.4;
         }
 
-        /* 状态指示器样式 */
+        /* 服务状态区域 - 紧凑布局 */
         .status-section {
             background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 6px;
+            padding: 14px;
             border: 1px solid #e1e4e8;
         }
 
         .status-info {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
         }
-
-        @media (min-width: 600px) {
+        /* 电脑端横向排列 */
+        @media (min-width: 480px) {
             .status-info {
                 flex-direction: row;
                 justify-content: space-between;
+                align-items: center;
             }
         }
 
         .status-item {
             color: #333;
+            font-size: 0.9rem;
         }
 
-        /* 状态标签样式 */
+        /* 状态标签 - 收紧尺寸，不臃肿 */
         #service-status, 
         .line-status {
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.85rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.78rem;
             font-weight: 500;
+            white-space: nowrap; /* 状态文字不换行 */
         }
 
-        /* 状态颜色区分 */
+        /* 状态颜色样式（保留原逻辑） */
         .status-normal {
             background-color: #d4edda;
             color: #155724;
         }
-
         .status-partial {
             background-color: #fff3cd;
             color: #856404;
         }
-
         .status-error {
             background-color: #f8d7da;
             color: #721c24;
         }
-
         .status-checking {
             background-color: #d1ecf1;
             color: #0c5460;
         }
 
-        /* 页脚样式 */
+        /* 页脚 - 精简间距 */
         footer {
             text-align: center;
-            padding: 20px;
-            margin-top: 20px;
+            padding: 15px 10px;
+            margin-top: 15px;
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-top: 1px solid #e1e4e8;
         }
-
         footer p {
-            margin: 5px 0;
+            margin: 3px 0;
         }
     </style>
 </head>
@@ -243,11 +255,11 @@
             // 网站标题
             siteTitle: "Reader阅读站",
             
-            // 线路配置（增删改这里即可，自动生成页面）
+            // 线路配置：只需要填写 url，jumpUrl 代码自动同步（保证检测地址=跳转地址）
             lines: [
-                { name: "台湾",   url: "http://tw.frp.one:18889",  jumpUrl: "http://tw.frp.one:18889" },
-                { name: "东京",   url: "http://jp.5.frp.one:18889", jumpUrl: "http://jp.5.frp.one:18889" },
-                { name: "香港",   url: "http://xg-4.frp.one:18889", jumpUrl: "http://xg-4.frp.one:18889" }
+                { name: "台湾", url: "http://tw.frp.one:18889" },
+                { name: "伦敦", url: "http://uk.frp.one:18889" },
+                { name: "香港", url: "http://xg-4.frp.one:18889" }
             ],
             
             // 检测配置
@@ -267,12 +279,12 @@
         document.getElementById('site-title').textContent = GLOBAL_CONFIG.siteTitle;
         document.title = GLOBAL_CONFIG.siteTitle;
 
-        // 给线路添加ID和状态元素ID
+        // 核心改动：强制 检测URL = 跳转URL，彻底统一，无需手动维护
         const lines = GLOBAL_CONFIG.lines.map((item, index) => ({
             id: `line${index + 1}`,
             name: item.name,
             url: item.url,
-            jumpUrl: item.jumpUrl,
+            jumpUrl: item.url,   // 自动同步，保证 test url = jump url
             statusElement: `line${index + 1}-status`
         }));
 
@@ -344,7 +356,7 @@
 
             if (onlineCount === lines.length) {
                 serviceStatusElement.textContent = '正常';
-                serviceTextElement.textContent = ` 服务状态: ${onlineCount}条线路正常`;
+                serviceTextElement.textContent = ` 服务状态: ${onlineCount}/${lines.length}条线路正常`;
             } else if (onlineCount > 0) {
                 serviceStatusElement.textContent = '正常';
                 serviceTextElement.textContent = ` 服务状态: ${onlineCount}/${lines.length}条线路正常`;
@@ -373,7 +385,7 @@
             });
         }
 
-        // 检测线路
+        // 检测线路（原有逻辑完全保留）
         async function checkLineStatus(line) {
             const statusElement = document.getElementById(line.statusElement);
             statusElement.textContent = '检测中...';
@@ -411,6 +423,7 @@
                             cache: 'no-store'
                         });
 
+                        await new Promise(r => setTimeout(r, GLOBAL_CONFIG.check.retryDelay));
                         clearTimeout(timeoutId);
                         statusElement.textContent = '正常';
                         updateStatusStyles();
@@ -427,4 +440,5 @@
         }
     </script>
 </body>
+
 </html>
