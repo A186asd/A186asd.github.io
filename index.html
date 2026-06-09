@@ -3,11 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- 强化移动端适配 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Reader阅读站</title>
     <style>
-        /* 基础样式重置 & 全局紧凑优化 */
         * {
             margin: 0;
             padding: 0;
@@ -18,8 +16,7 @@
         body {
             background-color: #f5f7fa;
             color: #333;
-            line-height: 1.5; /* 收紧行高，更紧凑 */
-            /* 响应式边距：手机小边距，电脑适中 */
+            line-height: 1.5;
             padding: 10px;
         }
         @media (min-width: 768px) {
@@ -37,26 +34,22 @@
             overflow: hidden;
         }
 
-        /* 头部 - 收紧内边距 */
         header {
             background-color: #2c3e50;
             color: white;
             padding: 16px 15px;
             text-align: center;
         }
-        /* 流体标题字体，大小屏自动适配 */
         header h1 {
             font-size: clamp(1.4rem, 4vw, 2rem);
             font-weight: 600;
             letter-spacing: 0.5px;
         }
 
-        /* 主内容区 - 大幅收紧留白 */
         main {
             padding: 18px 15px;
         }
 
-        /* 线路区域 */
         .line-section {
             margin-bottom: 20px;
         }
@@ -76,20 +69,17 @@
             padding: 0 5px;
         }
 
-        /* 响应式网格布局：手机/平板/电脑 分层平铺 */
         .lines-container {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px; /* 卡片间距收紧 */
+            gap: 10px;
         }
-        /* 大屏手机/平板：2列 */
         @media (min-width: 480px) {
             .lines-container {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
             }
         }
-        /* 电脑端：4列平铺 */
         @media (min-width: 768px) {
             .lines-container {
                 grid-template-columns: repeat(4, 1fr);
@@ -97,20 +87,18 @@
             }
         }
 
-        /* 线路卡片 - 紧凑化 + 优化移动端点击 */
         .line-card {
             text-decoration: none;
-            /* 消除移动端点击延迟 */
             touch-action: manipulation;
         }
 
         .line-card div {
             background-color: #fff;
             border-radius: 6px;
-            padding: 14px; /* 卡片内边距收紧 */
+            padding: 14px;
             border: 1px solid #e1e4e8;
             transition: all 0.25s ease;
-            height: 100%; /* 卡片高度统一 */
+            height: 100%; 
         }
 
         .line-card div:hover {
@@ -135,7 +123,6 @@
             line-height: 1.4;
         }
 
-        /* 服务状态区域 - 紧凑布局 */
         .status-section {
             background-color: #f8f9fa;
             border-radius: 6px;
@@ -148,7 +135,7 @@
             flex-direction: column;
             gap: 8px;
         }
-        /* 电脑端横向排列 */
+
         @media (min-width: 480px) {
             .status-info {
                 flex-direction: row;
@@ -162,17 +149,16 @@
             font-size: 0.9rem;
         }
 
-        /* 状态标签 - 收紧尺寸，不臃肿 */
+
         #service-status, 
         .line-status {
             padding: 2px 8px;
             border-radius: 10px;
             font-size: 0.78rem;
             font-weight: 500;
-            white-space: nowrap; /* 状态文字不换行 */
+            white-space: nowrap;
         }
 
-        /* 状态颜色样式（保留原逻辑） */
         .status-normal {
             background-color: #d4edda;
             color: #155724;
@@ -190,7 +176,6 @@
             color: #0c5460;
         }
 
-        /* 页脚 - 精简间距 */
         footer {
             text-align: center;
             padding: 15px 10px;
@@ -250,12 +235,10 @@
 
     <!-- JavaScript -->
     <script>
-        // ====================== 【全局可修改参数】 开始 ======================
         const GLOBAL_CONFIG = {
             // 网站标题
             siteTitle: "Reader阅读站",
             
-            // 线路配置：只需要填写 url，jumpUrl 代码自动同步（保证检测地址=跳转地址）
             lines: [
                 { name: "台湾", url: "http://tw.frp.one:18889" },
                 { name: "伦敦", url: "http://uk.frp.one:18889" },
@@ -273,22 +256,18 @@
             // 自动跳转（发现可用线路直接跳转）
             autoJump: true
         };
-        // ====================== 【全局可修改参数】 结束 ======================
 
-        // 初始化页面标题
         document.getElementById('site-title').textContent = GLOBAL_CONFIG.siteTitle;
         document.title = GLOBAL_CONFIG.siteTitle;
 
-        // 核心改动：强制 检测URL = 跳转URL，彻底统一，无需手动维护
         const lines = GLOBAL_CONFIG.lines.map((item, index) => ({
             id: `line${index + 1}`,
             name: item.name,
             url: item.url,
-            jumpUrl: item.url,   // 自动同步，保证 test url = jump url
+            jumpUrl: item.url, 
             statusElement: `line${index + 1}-status`
         }));
 
-        // 动态生成线路卡片
         const container = document.getElementById('lines-container');
         lines.forEach(line => {
             const card = document.createElement('a');
@@ -308,38 +287,32 @@
             container.appendChild(card);
         });
 
-        // 跳转标志和在线计数
         let hasJumped = false;
         let onlineCount = 0;
 
-        // 页面加载完成后开始检测
         document.addEventListener('DOMContentLoaded', function () {
             startLineChecking();
             setInterval(startLineChecking, GLOBAL_CONFIG.check.checkInterval);
         });
 
-        // 开始检查所有线路状态
         function startLineChecking() {
-            // 更新时间
+
             const now = new Date();
             const formattedDate = now.toISOString().slice(0, 10);
             const formattedTime = now.toTimeString().slice(0, 5);
             document.getElementById('lastUpdate').textContent = `${formattedDate} ${formattedTime}`;
 
-            // 初始化状态
             document.getElementById('service-status').textContent = '检测中...';
             document.getElementById('service-text').textContent = ' 服务状态: 检测中...';
             updateStatusStyles();
             onlineCount = 0;
 
-            // 检查线路
             lines.forEach(line => {
                 checkLineStatus(line).then(result => {
                     if (result.online) {
                         onlineCount++;
                         updateServiceStatus();
 
-                        // 自动跳转
                         if (GLOBAL_CONFIG.autoJump && !hasJumped) {
                             hasJumped = true;
                             window.location.href = result.line.jumpUrl;
@@ -349,7 +322,6 @@
             });
         }
 
-        // 更新服务状态
         function updateServiceStatus() {
             const serviceStatusElement = document.getElementById('service-status');
             const serviceTextElement = document.getElementById('service-text');
@@ -367,7 +339,6 @@
             updateStatusStyles();
         }
 
-        // 更新状态样式
         function updateStatusStyles() {
             const serviceStatus = document.getElementById('service-status');
             serviceStatus.className = '';
@@ -385,7 +356,6 @@
             });
         }
 
-        // 检测线路（原有逻辑完全保留）
         async function checkLineStatus(line) {
             const statusElement = document.getElementById(line.statusElement);
             statusElement.textContent = '检测中...';
