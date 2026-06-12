@@ -121,7 +121,8 @@
                 const avg = Math.round(filtered.reduce((s, v) => s + v, 0) / filtered.length);
                 return `${avg} ms`;
             } else {
-                const min = Math.min(...samples);
+                // 改动：最小值也取整
+                const min = Math.round(Math.min(...samples));
                 return `${min} ms*`;
             }
         }
@@ -189,7 +190,8 @@
                     });
                     clearTimeout(timer);
                     const endTime = performance.now();
-                    const latency = endTime - startTime;
+                    // 改动：原始延迟值也先取整存入样本
+                    const latency = Math.round(endTime - startTime);
                     
                     if (isWarmup) {
                         resolve({ success: true });
