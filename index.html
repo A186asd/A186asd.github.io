@@ -34,7 +34,7 @@
         </header>
         <main>
             <h2 class="section-title">线路选择</h2>
-            <p class="section-desc">电脑端无法正确检测连通性，全部异常为正常情况<br>延迟为前端多次采样估算值，存在误差，仅供参考；带*为有效采样过少，仅显示最低延迟</p>
+            <p class="section-desc">电脑端无法正确检测连通性，全部异常为正常情况</p>
             <div class="lines-container" id="lines-container"></div>
         </main>
         <footer>
@@ -45,19 +45,20 @@
         const GLOBAL_CONFIG = {
             siteTitle: "Reader阅读站",
             lines: [
-				{ name: "北京", url: "http://120.48.2.177:38889" },
+		{ name: "北京", url: "http://120.48.2.177:38889" },
                 { name: "台湾", url: "http://tw.frp.one:18889" },
                 { name: "伦敦", url: "http://uk.frp.one:18889" },
                 { name: "香港", url: "http://xg-4.frp.one:18889" },
-	            { name: "内网", url: "http://192.168.5.1:4568" },
+	        { name: "内网", url: "http://192.168.5.1:4568" },
             ],
             check: {
-                timeout: 10000,
+                timeout: 2000,          // 单次探测超时，缩短至3秒
                 retryCount: 1,
                 retryDelay: 800,
                 checkInterval: 60000,
-                sampleCount: 3,
-                warmupCount: 1
+                sampleCount: 5,
+                warmupCount: 1,         // 关闭预热，加快失败判定
+                quickFailThreshold: 1   // 连续2次失败，直接终止采样标记异常
             },
             autoJump: false
         };
@@ -111,48 +112,63 @@
                 }
             });
         }
+
+        function getCurrentLatencyDisplay(samples) {
+            if (samples.length === 0) return null;
+            if (samples.length >= 3) {
+                const sorted = [...samples].sort((a, b) => a - b);
+                const filtered = sorted.slice(1, -1);
+                const avg = Math.round(filtered.reduce((s, v) => s + v, 0) / filtered.length);
+                return `${avg} ms`;
+            } else {
+                const min = Math.min(...samples);
+                return `${min} ms*`;
+            }
+        }
+
         async function checkLineStatus(line) {
             const statusElement = document.getElementById(line.statusElement);
             statusElement.textContent = '检测中';
             updateStatusStyles();
             
-            const { timeout, sampleCount, warmupCount } = GLOBAL_CONFIG.check;
+            const { timeout, sampleCount, warmupCount, quickFailThreshold } = GLOBAL_CONFIG.check;
             const samples = [];
-            let successCount = 0;
+            let consecutiveFail = 0; // 连续失败计数
             
             if (warmupCount > 0) {
                 await detect(line, timeout, true);
             }
-            
+
             for (let i = 0; i < sampleCount; i++) {
                 const result = await detect(line, timeout);
                 if (result.success) {
                     samples.push(result.latency);
-                    successCount++;
+                    consecutiveFail = 0; // 重置连续失败
+                    if (GLOBAL_CONFIG.autoJump && !hasJumped) {
+                        hasJumped = true;
+                        window.location.href = line.jumpUrl;
+                    }
+                } else {
+                    consecutiveFail++;
+                    // 触发快速失败，直接终止循环
+                    if (consecutiveFail >= quickFailThreshold) {
+                        break;
+                    }
                 }
-                if (i < sampleCount - 1) {
-                    await new Promise(r => setTimeout(r, 100));
+
+                const displayText = getCurrentLatencyDisplay(samples);
+                if (displayText) {
+                    statusElement.textContent = displayText;
                 }
+                updateStatusStyles();
             }
-            
-            if (successCount >= 3) {
-                samples.sort((a, b) => a - b);
-                const filtered = samples.slice(1, -1);
-                const avgLatency = Math.round(filtered.reduce((a, b) => a + b, 0) / filtered.length);
-                statusElement.textContent = `${avgLatency} ms`;
-            } else if (successCount > 0) {
-                const minLatency = Math.min(...samples);
-                statusElement.textContent = `${minLatency} ms*`;
-            } else {
+
+            if (samples.length === 0) {
                 statusElement.textContent = '异常';
-            }
-            updateStatusStyles();
-            
-            if (GLOBAL_CONFIG.autoJump && !hasJumped && successCount > 0) {
-                hasJumped = true;
-                window.location.href = line.jumpUrl;
+                updateStatusStyles();
             }
         }
+
         function detect(line, timeout, isWarmup = false) {
             return new Promise(async (resolve) => {
                 const startTime = performance.now();
