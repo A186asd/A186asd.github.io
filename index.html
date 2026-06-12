@@ -49,7 +49,7 @@
                 { name: "台湾", url: "http://tw.frp.one:18889" },
                 { name: "伦敦", url: "http://uk.frp.one:18889" },
                 { name: "香港", url: "http://xg-4.frp.one:18889" },
-	{ name: "内网", url: "http://192.168.5.1:4568" },
+	            { name: "内网", url: "http://192.168.5.1:4568" },
             ],
             check: {
                 timeout: 10000,
@@ -96,11 +96,12 @@
                 checkLineStatus(line);
             });
         }
+        // 修改状态样式匹配：识别ms文本为正常状态
         function updateStatusStyles() {
             lines.forEach(line => {
                 const el = document.getElementById(line.statusElement);
                 el.className = 'line-status';
-                if (el.textContent === '正常') {
+                if (el.textContent.includes('ms')) {
                     el.classList.add('status-normal');
                 } else if (el.textContent === '异常') {
                     el.classList.add('status-error');
@@ -115,33 +116,42 @@
             updateStatusStyles();
             const { timeout, retryCount, retryDelay } = GLOBAL_CONFIG.check;
             let currentTry = 0;
+
+            // 检测函数：返回{success:boolean, latency?:number}
             const detect = () => {
                 return new Promise(async (resolve) => {
+                    const startTime = performance.now();
                     const checkUrl = `${line.url}?t=${Date.now()}`;
                     const controller = new AbortController();
                     const signal = controller.signal;
                     const timer = setTimeout(() => {
                         controller.abort();
-                        resolve(false);
+                        resolve({ success: false });
                     }, timeout);
                     try {
                         const res = await fetch(checkUrl, {
                             method: 'HEAD',
-                            mode: 'no-cors',
+                            // 开启no‑cors会绕过CORS报错，但无法确认服务真实连通性
+                            // mode: 'no-cors',
                             signal
                         });
                         clearTimeout(timer);
-                        resolve(true);
+                        const endTime = performance.now();
+                        const latency = Math.round(endTime - startTime);
+                        resolve({ success: true, latency });
                     } catch (err) {
                         clearTimeout(timer);
-                        resolve(false);
+                        resolve({ success: false });
                     }
                 });
             };
+
+            let result;
             while (currentTry <= retryCount) {
-                const isOnline = await detect();
-                if (isOnline) {
-                    statusElement.textContent = '正常';
+                result = await detect();
+                if (result.success) {
+                    // 显示延迟ms，替代原来的「正常」
+                    statusElement.textContent = `${result.latency} ms`;
                     updateStatusStyles();
                     if (GLOBAL_CONFIG.autoJump && !hasJumped) {
                         hasJumped = true;
